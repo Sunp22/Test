@@ -1,0 +1,253 @@
+{
+  "type": "minecraft:block_column",
+  "config": {
+    "direction": "up",
+    "allowed_placement": {
+      "type": "minecraft:matching_blocks",
+      "blocks": "minecraft:air"
+    },
+    "prioritize_tip": false,
+    "layers": [
+      {
+        "height": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 2
+        },
+        "provider": {
+          "type": "minecraft:weighted_state_provider",
+          "entries": [
+            {
+              "data": {
+                "Name": "minecraft:cherry_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:crimson_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:warped_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:birch_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:mangrove_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:bamboo_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:acacia_planks"
+              },
+              "weight": 1
+            },
+            {
+              "data": {
+                "Name": "minecraft:jungle_planks"
+              },
+              "weight": 1
+            }
+          ]
+        }
+      },
+      {
+        "height": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 2
+        },
+        "provider": {
+          "type": "minecraft:weighted_state_provider",
+          "entries": [
+            {
+              "data": {
+                "Name": "minecraft:cherry_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:crimson_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:warped_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:birch_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:mangrove_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:bamboo_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:acacia_planks"
+              },
+              "weight": 1
+            },
+            {
+              "data": {
+                "Name": "minecraft:jungle_planks"
+              },
+              "weight": 1
+            }
+          ]
+        }
+      },
+      {
+        "height": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 2
+        },
+        "provider": {
+          "type": "minecraft:weighted_state_provider",
+          "entries": [
+            {
+              "data": {
+                "Name": "minecraft:cherry_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:crimson_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:warped_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:birch_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:mangrove_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:bamboo_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:acacia_planks"
+              },
+              "weight": 1
+            },
+            {
+              "data": {
+                "Name": "minecraft:jungle_planks"
+              },
+              "weight": 1
+            }
+          ]
+        }
+      },
+      {
+        "height": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 0,
+          "max_inclusive": 2
+        },
+        "provider": {
+          "type": "minecraft:weighted_state_provider",
+          "entries": [
+            {
+              "data": {
+                "Name": "minecraft:cherry_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:crimson_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:warped_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:birch_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:mangrove_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:bamboo_planks"
+              },
+              "weight": 2
+            },
+            {
+              "data": {
+                "Name": "minecraft:acacia_planks"
+              },
+              "weight": 1
+            },
+            {
+              "data": {
+                "Name": "minecraft:jungle_planks"
+              },
+              "weight": 1
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
