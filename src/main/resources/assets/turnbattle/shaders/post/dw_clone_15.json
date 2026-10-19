@@ -1,0 +1,68 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "turnbattle_dw_clone",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "uniforms": [
+        {
+          "name": "RedMatrix",
+          "values": [
+            0.98719,
+            0.11904,
+            -0.106231
+          ]
+        },
+        {
+          "name": "GreenMatrix",
+          "values": [
+            -0.106231,
+            0.98719,
+            0.11904
+          ]
+        },
+        {
+          "name": "BlueMatrix",
+          "values": [
+            0.11904,
+            -0.106231,
+            0.98719
+          ]
+        },
+        {
+          "name": "Offset",
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "ColorScale",
+          "values": [
+            1.15,
+            1.15,
+            1.15
+          ]
+        },
+        {
+          "name": "Saturation",
+          "values": [
+            0.9
+          ]
+        },
+        {
+          "name": "Gray",
+          "values": [
+            0.299,
+            0.587,
+            0.114
+          ]
+        }
+      ]
+    }
+  ]
+}
