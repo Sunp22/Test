@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "turnbattle:item/determination_soul_item"
+  },
+  "display": {
+    "thirdperson_righthand": { "scale": [0.5, 0.5, 0.5] },
+    "thirdperson_lefthand":  { "scale": [0.5, 0.5, 0.5] },
+    "firstperson_righthand": { "scale": [0.5, 0.5, 0.5] },
+    "firstperson_lefthand":  { "scale": [0.5, 0.5, 0.5] },
+    "ground":                { "scale": [0.5, 0.5, 0.5] },
+    "gui":                   { "scale": [0.5, 0.5, 0.5] },
+    "head":                  { "scale": [0.5, 0.5, 0.5] },
+    "fixed":                 { "scale": [0.5, 0.5, 0.5] }
+  }
+}
