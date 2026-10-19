@@ -1,0 +1,60 @@
+{
+  "has_precipitation": true,
+  "temperature": 0.8,
+  "downfall": 0.4,
+  "effects": {
+    "water_color": 4159204,
+    "fog_color": 12638463,
+    "sky_color": 7907327,
+    "grass_color": 9470285,
+    "foliage_color": 8168439,
+    "water_fog_color": 329011
+  },
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "turnbattle:wool_patch_black_a",
+      "turnbattle:wool_patch_black_b"
+    ],
+    [],
+    [],
+    [
+      "turnbattle:wool_tree_big_black",
+      "turnbattle:wool_tree_black",
+      "turnbattle:wool_lamp_post",
+      "turnbattle:wool_candles_black",
+      "turnbattle:wool_carpet_black"
+    ],
+    []
+  ],
+  "creature_spawn_probability": 0.1,
+  "spawners": {
+    "monster": [
+      {
+        "type": "minecraft:zombie",
+        "weight": 100,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:skeleton",
+        "weight": 80,
+        "minCount": 2,
+        "maxCount": 3
+      },
+      {
+        "type": "minecraft:spider",
+        "weight": 60,
+        "minCount": 1,
+        "maxCount": 2
+      }
+    ]
+  },
+  "spawn_costs": {}
+}

@@ -1,0 +1,66 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.5,
+  "downfall": 0.0,
+  "effects": {
+    "water_color": 4159204,
+    "fog_color": 10518688,
+    "sky_color": 6187610,
+    "grass_color": 8103665,
+    "foliage_color": 8103665,
+    "water_fog_color": 329011
+  },
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_copper",
+      "minecraft:ore_copper_large"
+    ],
+    [
+      "minecraft:large_dripstone",
+      "minecraft:dripstone_cluster",
+      "minecraft:pointed_dripstone"
+    ],
+    [],
+    [],
+    []
+  ],
+  "creature_spawn_probability": 0.15,
+  "spawners": {
+    "monster": [
+      {
+        "type": "minecraft:zombie",
+        "weight": 100,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:skeleton",
+        "weight": 100,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:cave_spider",
+        "weight": 70,
+        "minCount": 2,
+        "maxCount": 3
+      },
+      {
+        "type": "minecraft:spider",
+        "weight": 60,
+        "minCount": 1,
+        "maxCount": 2
+      }
+    ]
+  },
+  "spawn_costs": {}
+}
