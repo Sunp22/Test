@@ -1,0 +1,20 @@
+{
+  "caxton_providers": [
+    {
+      "type": "caxton",
+      "regular": {
+        "file": "turnbattle:greater_determination.otf",
+        "scale_factor": 1.0
+      }
+    }
+  ],
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "turnbattle:greater_determination.otf",
+      "shift": [0, 0],
+      "size": 11.0,
+      "oversample": 6.0
+    }
+  ]
+}
