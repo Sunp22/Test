@@ -1,0 +1,349 @@
+{
+  "mus_battle_psi": {
+    "sounds": [
+      {
+        "name": "turnbattle:mus_battle_psi",
+        "stream": true
+      }
+    ],
+    "category": "music"
+  },
+  "mus_battle_lightner": {
+    "sounds": [
+      {
+        "name": "turnbattle:mus_battle_lightner",
+        "stream": true
+      }
+    ],
+    "category": "music"
+  },
+  "mus_battle_mob": {
+    "sounds": [
+      {
+        "name": "turnbattle:mus_battle_mob",
+        "stream": true
+      }
+    ],
+    "category": "music"
+  },
+  "snd_removesoul": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_removesoul"
+      }
+    ]
+  },
+  "snd_removesoul_world": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_removesoul_world",
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "snd_grab": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_grab"
+      }
+    ]
+  },
+  "snd_rudebuster_swing": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_rudebuster_swing"
+      }
+    ]
+  },
+  "snd_graze": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_graze"
+      }
+    ]
+  },
+  "snd_damage": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_damage"
+      }
+    ]
+  },
+  "snd_defeat": {
+    "sounds": [
+      {
+        "name": "turnbattle:defeatsfx"
+      }
+    ]
+  },
+  "battle_start": {
+    "sounds": [
+      {
+        "name": "turnbattle:battle_start"
+      }
+    ]
+  },
+  "slash": {
+    "sounds": [
+      {
+        "name": "turnbattle:slash"
+      }
+    ]
+  },
+  "snd_noise": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_noise"
+      }
+    ]
+  },
+  "snd_climb": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_climb"
+      }
+    ]
+  },
+  "snd_chargejump_1": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_chargejump_1"
+      }
+    ]
+  },
+  "snd_chargejump_2": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_chargejump_2"
+      }
+    ]
+  },
+  "snd_chargejump_3": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_chargejump_3"
+      }
+    ]
+  },
+  "snd_fountain_target": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_fountain_target"
+      }
+    ]
+  },
+  "snd_great_shine": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_great_shine"
+      }
+    ]
+  },
+  "snd_usefountain": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_usefountain"
+      }
+    ]
+  },
+  "snd_revival": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_revival"
+      }
+    ]
+  },
+  "snd_fountain_make": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_fountain_make"
+      }
+    ]
+  },
+  "snd_ominous": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_ominous"
+      }
+    ]
+  },
+  "snd_ominous_cancel": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_ominous_cancel"
+      }
+    ]
+  },
+  "mus_intronoise": {
+    "sounds": [
+      {
+        "name": "turnbattle:mus_intronoise",
+        "stream": true
+      }
+    ]
+  },
+  "snd_menumove": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_menumove"
+      }
+    ]
+  },
+  "snd_select": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_select"
+      }
+    ]
+  },
+  "snd_b": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_b"
+      }
+    ]
+  },
+  "snd_chestopen": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_chestopen"
+      }
+    ]
+  },
+  "snd_item": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_item"
+      }
+    ]
+  },
+  "snd_power": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_power"
+      }
+    ]
+  },
+  "snd_levelupmix": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_levelupmix"
+      }
+    ]
+  },
+  "snd_mercyadd": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_mercyadd"
+      }
+    ]
+  },
+  "snd_save": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_save",
+        "stream": false
+      }
+    ]
+  },
+  "snd_hurt": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_hurt"
+      }
+    ]
+  },
+  "snd_text": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_text",
+        "stream": false
+      }
+    ]
+  },
+  "mus_faint_courage": {
+    "sounds": [
+      {
+        "name": "turnbattle:mus_faint_courage",
+        "stream": true
+      }
+    ]
+  },
+  "snd_shoot": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_shoot"
+      }
+    ]
+  },
+  "snd_chargeshot_charge": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_chargeshot_charge"
+      }
+    ]
+  },
+  "snd_chargeshot_fire": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_chargeshot_fire"
+      }
+    ]
+  },
+  "snd_dtrans_flip": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_dtrans_flip"
+      }
+    ]
+  },
+  "snd_dtrans_twinkle": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_dtrans_twinkle"
+      }
+    ]
+  },
+  "snd_dtrans_square": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_dtrans_square"
+      }
+    ]
+  },
+  "snd_dtrans_drone": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_dtrans_drone"
+      }
+    ]
+  },
+  "snd_dtrans_lw": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_dtrans_lw"
+      }
+    ]
+  },
+  "snd_spare": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_spare"
+      }
+    ]
+  },
+  "snd_deathnoise": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_deathnoise"
+      }
+    ]
+  },
+  "snd_petrify": {
+    "sounds": [
+      {
+        "name": "turnbattle:snd_petrify"
+      }
+    ]
+  }
+}
