@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "turnbattle",
+  "version": "${version}",
+  "name": "Soulbound Turn Battle",
+  "description": "Turn-based battles, Dark Worlds and more.",
+  "environment": "*",
+  "entrypoints": {
+    "preLaunch": ["com.pixelcite.turnbattle.TurnBattlePreLaunch"],
+    "main": ["com.pixelcite.turnbattle.TurnBattleMod"],
+    "client": ["com.pixelcite.turnbattle.TurnBattleClientMod"]
+  },
+  "mixins": ["turnbattle.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
