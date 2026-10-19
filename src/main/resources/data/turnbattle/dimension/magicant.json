@@ -1,0 +1,18 @@
+{
+  "type": "turnbattle:magicant",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "turnbattle:magicant",
+      "features": false,
+      "lakes": false,
+      "layers": [
+        {
+          "block": "minecraft:barrier",
+          "height": 1
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}
