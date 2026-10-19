@@ -13,29 +13,45 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        timeout-minutes: 3
 
-      # Minecraft 1.21.x needs Java 21
+      - name: Diagnostics (what is in the repo?)
+        timeout-minutes: 2
+        run: |
+          ls -la
+          ls -la patcher || echo "!! patcher/ folder is missing - apply infiniverse-shim.patch first"
+          echo "--- candidate original jars (zip files in repo root) ---"
+          for f in $(git ls-files | grep -v '^src/' | grep -v '^patcher/'); do
+            if [ -f "$f" ]; then echo "$f  $(stat -c%s "$f") bytes  $(file -b "$f" | cut -c1-40)"; fi
+          done
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
+        timeout-minutes: 5
         with:
           distribution: temurin
           java-version: 21
 
       - name: Set up Gradle (with caching)
         uses: gradle/actions/setup-gradle@v4
+        timeout-minutes: 5
         with:
           gradle-version: 8.10.2
 
       # Compiles ONLY the small Fantasy->Infiniverse shim in patcher/ (not the decompiled source)
       - name: Build Fantasy->Infiniverse shim
-        run: gradle -p patcher build --no-daemon --stacktrace
+        timeout-minutes: 10
+        run: gradle -p patcher build --no-daemon --console=plain --stacktrace
 
-      # Finds the original turnbattle jar in the repo and overlays the shim onto it
       - name: Patch original Turn Battle jar
-        run: python3 patcher/scripts/merge.py --patcher-jar "patcher/build/libs/turnbattle-infiniverse-patch-*.jar" --out dist
+        timeout-minutes: 5
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python3 -u patcher/scripts/merge.py --patcher-jar "patcher/build/libs/turnbattle-infiniverse-patch-*.jar" --out dist
 
       - name: Upload patched mod jar
         uses: actions/upload-artifact@v4
