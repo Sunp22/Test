@@ -1,0 +1,899 @@
+From 19b54677fa206f811457230489e2005ac3e04ed8 Mon Sep 17 00:00:00 2001
+From: x <a@b>
+Date: Mon, 19 Oct 2026 15:22:38 +0000
+Subject: [PATCH] base
+
+---
+ .github/workflows/infiniverse-patch.yml       |  36 ++++
+ patcher/build.gradle                          |  25 +++
+ patcher/gradle.properties                     |   7 +
+ .../scripts/__pycache__/merge.cpython-312.pyc | Bin 0 -> 13808 bytes
+ patcher/scripts/merge.py                      | 190 ++++++++++++++++++
+ patcher/settings.gradle                       |   8 +
+ .../infiniversepatch/InfiniverseBridge.java   |  78 +++++++
+ .../pixelcite/infiniversepatch/PatchInit.java |  67 ++++++
+ .../infiniversepatch/WorldSeeds.java          |  27 +++
+ .../mixin/DarkWorldSeedMixin.java             |  19 ++
+ .../java/xyz/nucleoid/fantasy/Fantasy.java    |  59 ++++++
+ .../nucleoid/fantasy/RuntimeWorldConfig.java  |  56 ++++++
+ .../nucleoid/fantasy/RuntimeWorldHandle.java  |  35 ++++
+ patcher/src/main/resources/fabric.mod.json    |  10 +
+ .../turnbattle-infiniverse.mixins.json        |   8 +
+ 15 files changed, 625 insertions(+)
+ create mode 100644 .github/workflows/infiniverse-patch.yml
+ create mode 100644 patcher/build.gradle
+ create mode 100644 patcher/gradle.properties
+ create mode 100644 patcher/scripts/__pycache__/merge.cpython-312.pyc
+ create mode 100755 patcher/scripts/merge.py
+ create mode 100644 patcher/settings.gradle
+ create mode 100644 patcher/src/main/java/com/pixelcite/infiniversepatch/InfiniverseBridge.java
+ create mode 100644 patcher/src/main/java/com/pixelcite/infiniversepatch/PatchInit.java
+ create mode 100644 patcher/src/main/java/com/pixelcite/infiniversepatch/WorldSeeds.java
+ create mode 100644 patcher/src/main/java/com/pixelcite/infiniversepatch/mixin/DarkWorldSeedMixin.java
+ create mode 100644 patcher/src/main/java/xyz/nucleoid/fantasy/Fantasy.java
+ create mode 100644 patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldConfig.java
+ create mode 100644 patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldHandle.java
+ create mode 100644 patcher/src/main/resources/fabric.mod.json
+ create mode 100644 patcher/src/main/resources/turnbattle-infiniverse.mixins.json
+
+diff --git a/.github/workflows/infiniverse-patch.yml b/.github/workflows/infiniverse-patch.yml
+new file mode 100644
+index 0000000..965aea2
+--- /dev/null
++++ b/.github/workflows/infiniverse-patch.yml
+@@ -0,0 +1,36 @@
++name: Infiniverse patch
++
++on:
++  push:
++    branches: [ main, master ]
++  workflow_dispatch:
++
++permissions:
++  contents: read
++
++jobs:
++  patch:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++
++      - uses: actions/setup-java@v4
++        with:
++          distribution: temurin
++          java-version: 21
++
++      - uses: gradle/actions/setup-gradle@v4
++        with:
++          gradle-version: 8.10.2
++
++      - name: Build Fantasy->Infiniverse shim
++        run: gradle -p patcher build --no-daemon --stacktrace
++
++      - name: Patch original Turn Battle jar
++        run: python3 patcher/scripts/merge.py --patcher-jar "patcher/build/libs/turnbattle-infiniverse-patch-*.jar" --out dist
++
++      - uses: actions/upload-artifact@v4
++        with:
++          name: turnbattle-infiniverse
++          path: dist/*.jar
++          if-no-files-found: error
+diff --git a/patcher/build.gradle b/patcher/build.gradle
+new file mode 100644
+index 0000000..552b8dc
+--- /dev/null
++++ b/patcher/build.gradle
+@@ -0,0 +1,25 @@
++plugins {
++    id 'fabric-loom' version '1.9-SNAPSHOT'
++}
++
++version = project.mod_version
++base { archivesName = project.archives_base_name }
++
++repositories { mavenCentral() }
++
++dependencies {
++    minecraft "com.mojang:minecraft:${project.minecraft_version}"
++    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
++    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
++    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
++}
++
++processResources {
++    inputs.property 'version', project.version
++    filesMatching('fabric.mod.json') { expand 'version': project.version }
++}
++
++tasks.withType(JavaCompile).configureEach {
++    it.options.encoding = 'UTF-8'
++    it.options.release = 21
++}
+diff --git a/patcher/gradle.properties b/patcher/gradle.properties
+new file mode 100644
+index 0000000..5efd80f
+--- /dev/null
++++ b/patcher/gradle.properties
+@@ -0,0 +1,7 @@
++org.gradle.jvmargs=-Xmx2G
++minecraft_version=1.21.1
++yarn_mappings=1.21.1+build.3
++loader_version=0.16.10
++fabric_version=0.115.0+1.21.1
++mod_version=1.0.0
++archives_base_name=turnbattle-infiniverse-patch
+diff --git a/patcher/scripts/__pycache__/merge.cpython-312.pyc b/patcher/scripts/__pycache__/merge.cpython-312.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..af08bede011d9bf4dc8d74e0e74b7d710ebe54b9
+GIT binary patch
+literal 13808
+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
+X^r65VdD$m~`X77l$}yr`Aou?PcyU9f
+
+literal 0
+HcmV?d00001
+
+diff --git a/patcher/scripts/merge.py b/patcher/scripts/merge.py
+new file mode 100755
+index 0000000..206c070
+--- /dev/null
++++ b/patcher/scripts/merge.py
+@@ -0,0 +1,190 @@
++#!/usr/bin/env python3
++"""Overlay the Fantasy->Infiniverse shim onto the ORIGINAL Turn Battle jar (no decompiled source involved)."""
++import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile, zipfile
++
++ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
++SKIP_DIRS = {".git", "patcher", "src", "build", ".gradle", ".github", "node_modules"}
++FANTASY = "xyz/nucleoid/fantasy/"
++MIXIN_CFG = "turnbattle-infiniverse.mixins.json"
++ENTRYPOINT = "com.pixelcite.infiniversepatch.PatchInit"
++
++
++def mod_id(path):
++    try:
++        with zipfile.ZipFile(path) as z:
++            return json.loads(z.read("fabric.mod.json").decode("utf-8-sig")).get("id")
++    except Exception:
++        return None
++
++
++def find_original(explicit):
++    if explicit:
++        return explicit
++    found = []
++    for d, dirs, files in os.walk(ROOT):
++        dirs[:] = [x for x in dirs if x not in SKIP_DIRS]
++        for f in files:
++            p = os.path.join(d, f)
++            if zipfile.is_zipfile(p) and mod_id(p) == "turnbattle":
++                found.append(p)
++    if not found:
++        sys.exit("ERROR: no Fabric jar with mod id 'turnbattle' found in the repo (pass --original PATH).")
++    found.sort(key=os.path.getsize, reverse=True)
++    print("Original jar:", found[0], "(candidates: %d)" % len(found))
++    return found[0]
++
++
++def javap(args):
++    return subprocess.run(["javap"] + args, capture_output=True, text=True, check=True).stdout
++
++
++def audit(orig_dir, shim_dir):
++    """Every Fantasy member the original calls must exist in the shim (same name + descriptor)."""
++    needle = FANTASY.encode()
++    users = []
++    for d, _, files in os.walk(orig_dir):
++        for f in files:
++            p = os.path.join(d, f)
++            rel = os.path.relpath(p, orig_dir).replace(os.sep, "/")
++            if f.endswith(".class") and not rel.startswith(FANTASY):
++                with open(p, "rb") as fh:
++                    if needle in fh.read():
++                        users.append(p)
++    print("Classes referencing Fantasy: %d" % len(users))
++    for u in users:
++        print("  ", os.path.relpath(u, orig_dir))
++    if not users:
++        return
++
++    used = set()
++    pat = re.compile(r"(?:Method|InterfaceMethod|Field)\s+(xyz/nucleoid/fantasy/[\w/$]+)\.([\w<>$]+)(?::|\s+)\s*(\S*)")
++    out = javap(["-c", "-p"] + users)
++    for line in out.splitlines():
++        m = re.search(r"(Method|InterfaceMethod|Field)\s+(xyz/nucleoid/fantasy/[\w/$]+)\.([\w<>$]+):(\S+)", line)
++        if m:
++            used.add((m.group(1), m.group(2), m.group(3), m.group(4)))
++
++    have = set()
++    shim_classes = []
++    for d, _, files in os.walk(os.path.join(shim_dir, "xyz", "nucleoid", "fantasy")):
++        shim_classes += [os.path.join(d, f) for f in files if f.endswith(".class")]
++    cur = None
++    for line in javap(["-p", "-s", "-cp", shim_dir] + shim_classes).splitlines():
++        cm = re.match(r"^(?:public |final |abstract )*(?:class|interface) ([\w.$]+)", line)
++        if cm:
++            cur = cm.group(1).replace(".", "/")
++            continue
++        sm = re.match(r"^\s+(?:[\w.<>\[\], $?]+ )?(<init>|[\w$]+|[\w.$]+)\(.*\);?$", line)
++        if sm and cur:
++            name = sm.group(1)
++            if "." in name:
++                name = "<init>"
++            pending = name
++            continue
++        dm = re.match(r"^\s+descriptor: (\S+)", line)
++        if dm and cur:
++            have.add((cur, pending, dm.group(1)))
++        fm = re.match(r"^\s+(?:[\w.<>\[\], $?]+ )?([\w$]+);$", line)
++        if fm and cur:
++            pending = fm.group(1)
++
++    missing = []
++    for kind, cls, name, desc in sorted(used):
++        if kind == "Field":
++            continue
++        if (cls, name, desc) not in have:
++            missing.append("%s.%s:%s" % (cls, name, desc))
++    if missing:
++        print("\nWARNING: the original jar may call Fantasy API the shim does not provide (audit is advisory):")
++        for m in missing:
++            print("   ", m)
++        print("If any of these are real, add them to patcher/src/main/java/xyz/nucleoid/fantasy/ and rebuild.")
++        return
++    print("Audit OK: all %d Fantasy calls are covered by the shim." % len(used))
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--original")
++    ap.add_argument("--patcher-jar")
++    ap.add_argument("--out", default="dist")
++    a = ap.parse_args()
++
++    original = find_original(a.original)
++    pj = a.patcher_jar or sorted(glob.glob(os.path.join(ROOT, "patcher", "build", "libs", "*.jar")))[-1]
++    pj = [p for p in glob.glob(pj)][0] if "*" in pj else pj
++    work = tempfile.mkdtemp()
++    orig_dir, shim_dir = os.path.join(work, "orig"), os.path.join(work, "shim")
++    zipfile.ZipFile(original).extractall(orig_dir)
++    zipfile.ZipFile(pj).extractall(shim_dir)
++
++    audit_dir = orig_dir
++    # remove any embedded Fantasy (jar-in-jar or shaded)
++    jars_dir = os.path.join(orig_dir, "META-INF", "jars")
++    removed_jars = []
++    if os.path.isdir(jars_dir):
++        for f in os.listdir(jars_dir):
++            if "fantasy" in f.lower():
++                os.remove(os.path.join(jars_dir, f))
++                removed_jars.append("META-INF/jars/" + f)
++    shutil.rmtree(os.path.join(orig_dir, "xyz", "nucleoid", "fantasy"), ignore_errors=True)
++
++    # fabric.mod.json
++    fp = os.path.join(orig_dir, "fabric.mod.json")
++    with open(fp, encoding="utf-8-sig") as fh:
++        fmj = json.load(fh)
++    for section in ("depends", "recommends", "suggests", "breaks", "conflicts"):
++        if isinstance(fmj.get(section), dict):
++            fmj[section].pop("fantasy", None)
++    if isinstance(fmj.get("jars"), list):
++        fmj["jars"] = [j for j in fmj["jars"] if "fantasy" not in json.dumps(j).lower()]
++        if not fmj["jars"]:
++            del fmj["jars"]
++    mixins = fmj.setdefault("mixins", [])
++    if not isinstance(mixins, list):
++        mixins = fmj["mixins"] = [mixins]
++    if MIXIN_CFG not in mixins:
++        mixins.append(MIXIN_CFG)
++    mains = fmj.setdefault("entrypoints", {}).setdefault("main", [])
++    if ENTRYPOINT not in mains:
++        mains.append(ENTRYPOINT)
++    with open(fp, "w", encoding="utf-8") as fh:
++        json.dump(fmj, fh, indent=2)
++
++    # overlay shim (everything but its own fabric.mod.json / META-INF)
++    for d, _, files in os.walk(shim_dir):
++        for f in files:
++            src = os.path.join(d, f)
++            rel = os.path.relpath(src, shim_dir)
++            if rel == "fabric.mod.json" or rel.startswith("META-INF"):
++                continue
++            dst = os.path.join(orig_dir, rel)
++            os.makedirs(os.path.dirname(dst), exist_ok=True)
++            shutil.copy2(src, dst)
++
++    # audit against the ORIGINAL classes (re-extract, since we may have deleted embedded ones)
++    pristine = os.path.join(work, "pristine")
++    zipfile.ZipFile(original).extractall(pristine)
++    audit(pristine, shim_dir)
++
++    os.makedirs(a.out, exist_ok=True)
++    out = os.path.join(a.out, os.path.basename(original).rsplit(".", 1)[0] + "-infiniverse.jar")
++    if os.path.exists(out):
++        os.remove(out)
++    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
++        mf = os.path.join(orig_dir, "META-INF", "MANIFEST.MF")
++        if os.path.exists(mf):
++            z.write(mf, "META-INF/MANIFEST.MF")
++        for d, _, files in os.walk(orig_dir):
++            for f in sorted(files):
++                p = os.path.join(d, f)
++                rel = os.path.relpath(p, orig_dir).replace(os.sep, "/")
++                if rel == "META-INF/MANIFEST.MF" or re.match(r"META-INF/[^/]+\.(SF|RSA|DSA|EC)$", rel):
++                    continue
++                z.write(p, rel)
++    print("Removed embedded Fantasy:", removed_jars or "none found")
++    print("Wrote", out)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/patcher/settings.gradle b/patcher/settings.gradle
+new file mode 100644
+index 0000000..64b17ad
+--- /dev/null
++++ b/patcher/settings.gradle
+@@ -0,0 +1,8 @@
++pluginManagement {
++    repositories {
++        maven { url = 'https://maven.fabricmc.net/' }
++        mavenCentral()
++        gradlePluginPortal()
++    }
++}
++rootProject.name = 'turnbattle-infiniverse-patch'
+diff --git a/patcher/src/main/java/com/pixelcite/infiniversepatch/InfiniverseBridge.java b/patcher/src/main/java/com/pixelcite/infiniversepatch/InfiniverseBridge.java
+new file mode 100644
+index 0000000..92f4087
+--- /dev/null
++++ b/patcher/src/main/java/com/pixelcite/infiniversepatch/InfiniverseBridge.java
+@@ -0,0 +1,78 @@
++package com.pixelcite.infiniversepatch;
++
++import java.lang.reflect.InvocationTargetException;
++import java.lang.reflect.Method;
++import java.util.function.Supplier;
++import net.minecraft.registry.RegistryKey;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.world.ServerWorld;
++import net.minecraft.world.World;
++import net.minecraft.world.dimension.DimensionOptions;
++
++/** Reflection bridge to net.commoble.infiniverse.api.InfiniverseAPI (NeoForge mod, loaded through Sinytra Connector). */
++public final class InfiniverseBridge {
++   private static final String API_CLASS = "net.commoble.infiniverse.api.InfiniverseAPI";
++   private static Object api;
++   private static Method getOrCreateLevel;
++   private static Method markForUnregistration;
++
++   private InfiniverseBridge() {
++   }
++
++   private static synchronized void init() {
++      if (api != null) {
++         return;
++      }
++
++      try {
++         Class<?> cls = Class.forName(API_CLASS);
++         Object instance = cls.getMethod("get").invoke(null);
++         Method create = null;
++         Method unregister = null;
++
++         for (Method m : cls.getMethods()) {
++            if (m.getName().equals("getOrCreateLevel") && m.getParameterCount() == 3) {
++               create = m;
++            } else if (m.getName().equals("markDimensionForUnregistration") && m.getParameterCount() == 2) {
++               unregister = m;
++            }
++         }
++
++         if (create == null || unregister == null) {
++            throw new NoSuchMethodException("Infiniverse API has an unexpected shape (wrong version?)");
++         }
++
++         getOrCreateLevel = create;
++         markForUnregistration = unregister;
++         api = instance;
++      } catch (ReflectiveOperationException | LinkageError e) {
++         throw new IllegalStateException(
++            "Infiniverse is required for Dark Worlds but could not be loaded (install Infiniverse 1.21 AND Sinytra Connector)", e
++         );
++      }
++   }
++
++   public static ServerWorld getOrCreateWorld(MinecraftServer server, RegistryKey<World> key, Supplier<DimensionOptions> options) {
++      init();
++
++      try {
++         return (ServerWorld)getOrCreateLevel.invoke(api, server, key, options);
++      } catch (InvocationTargetException e) {
++         throw e.getCause() instanceof RuntimeException re ? re : new IllegalStateException(e.getCause());
++      } catch (IllegalAccessException e) {
++         throw new IllegalStateException(e);
++      }
++   }
++
++   public static void unregisterWorld(MinecraftServer server, RegistryKey<World> key) {
++      init();
++
++      try {
++         markForUnregistration.invoke(api, server, key);
++      } catch (InvocationTargetException e) {
++         throw e.getCause() instanceof RuntimeException re ? re : new IllegalStateException(e.getCause());
++      } catch (IllegalAccessException e) {
++         throw new IllegalStateException(e);
++      }
++   }
++}
+diff --git a/patcher/src/main/java/com/pixelcite/infiniversepatch/PatchInit.java b/patcher/src/main/java/com/pixelcite/infiniversepatch/PatchInit.java
+new file mode 100644
+index 0000000..6fd54de
+--- /dev/null
++++ b/patcher/src/main/java/com/pixelcite/infiniversepatch/PatchInit.java
+@@ -0,0 +1,67 @@
++package com.pixelcite.infiniversepatch;
++
++import java.io.IOException;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.util.Comparator;
++import java.util.Iterator;
++import java.util.Set;
++import java.util.concurrent.ConcurrentHashMap;
++import java.util.stream.Stream;
++import net.fabricmc.api.ModInitializer;
++import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
++import net.minecraft.registry.RegistryKey;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.util.Identifier;
++import net.minecraft.util.WorldSavePath;
++import net.minecraft.world.World;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++
++/** Fantasy deleted a world's folder on handle.delete(); Infiniverse only unloads. Finish the job once the world is gone. */
++public class PatchInit implements ModInitializer {
++   private static final Logger LOGGER = LoggerFactory.getLogger("turnbattle-infiniverse-patch");
++   private static final Set<RegistryKey<World>> PENDING_DELETE = ConcurrentHashMap.newKeySet();
++
++   public static void scheduleDelete(RegistryKey<World> key) {
++      PENDING_DELETE.add(key);
++   }
++
++   @Override
++   public void onInitialize() {
++      ServerTickEvents.END_SERVER_TICK.register(server -> {
++         if (server.getTicks() % 20 == 0 && !PENDING_DELETE.isEmpty()) {
++            Iterator<RegistryKey<World>> it = PENDING_DELETE.iterator();
++
++            while (it.hasNext()) {
++               RegistryKey<World> key = it.next();
++               if (server.getWorld(key) == null) {
++                  WorldSeeds.remove(key.getValue());
++                  if (deleteFolder(server, key.getValue())) {
++                     it.remove();
++                  }
++               }
++            }
++         }
++      });
++   }
++
++   private static boolean deleteFolder(MinecraftServer server, Identifier id) {
++      Path dir = server.getSavePath(WorldSavePath.ROOT).resolve("dimensions").resolve(id.getNamespace()).resolve(id.getPath());
++      if (!Files.isDirectory(dir)) {
++         return true;
++      }
++
++      try (Stream<Path> walk = Files.walk(dir)) {
++         for (Path f : walk.sorted(Comparator.reverseOrder()).toList()) {
++            Files.deleteIfExists(f);
++         }
++
++         LOGGER.info("Deleted folder of removed dimension {}", id);
++         return true;
++      } catch (IOException e) {
++         LOGGER.warn("Couldn't delete folder of {} yet ({}); will retry", id, e.toString());
++         return false;
++      }
++   }
++}
+diff --git a/patcher/src/main/java/com/pixelcite/infiniversepatch/WorldSeeds.java b/patcher/src/main/java/com/pixelcite/infiniversepatch/WorldSeeds.java
+new file mode 100644
+index 0000000..43c263a
+--- /dev/null
++++ b/patcher/src/main/java/com/pixelcite/infiniversepatch/WorldSeeds.java
+@@ -0,0 +1,27 @@
++package com.pixelcite.infiniversepatch;
++
++import java.util.Map;
++import java.util.concurrent.ConcurrentHashMap;
++import net.minecraft.registry.RegistryKey;
++import net.minecraft.util.Identifier;
++import net.minecraft.world.World;
++
++/** Infiniverse levels have no per-world seed; remember the one Fantasy used to carry. */
++public final class WorldSeeds {
++   private static final Map<Identifier, Long> SEEDS = new ConcurrentHashMap<>();
++
++   private WorldSeeds() {
++   }
++
++   public static void put(Identifier id, long seed) {
++      SEEDS.put(id, seed);
++   }
++
++   public static void remove(Identifier id) {
++      SEEDS.remove(id);
++   }
++
++   public static Long get(RegistryKey<World> key) {
++      return SEEDS.get(key.getValue());
++   }
++}
+diff --git a/patcher/src/main/java/com/pixelcite/infiniversepatch/mixin/DarkWorldSeedMixin.java b/patcher/src/main/java/com/pixelcite/infiniversepatch/mixin/DarkWorldSeedMixin.java
+new file mode 100644
+index 0000000..f1b5107
+--- /dev/null
++++ b/patcher/src/main/java/com/pixelcite/infiniversepatch/mixin/DarkWorldSeedMixin.java
+@@ -0,0 +1,19 @@
++package com.pixelcite.infiniversepatch.mixin;
++
++import com.pixelcite.infiniversepatch.WorldSeeds;
++import net.minecraft.server.world.ServerWorld;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.injection.At;
++import org.spongepowered.asm.mixin.injection.Inject;
++import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
++
++@Mixin(ServerWorld.class)
++public abstract class DarkWorldSeedMixin {
++   @Inject(method = "getSeed", at = @At("HEAD"), cancellable = true)
++   private void turnbattle$darkWorldSeed(CallbackInfoReturnable<Long> cir) {
++      Long seed = WorldSeeds.get(((ServerWorld)(Object)this).getRegistryKey());
++      if (seed != null) {
++         cir.setReturnValue(seed);
++      }
++   }
++}
+diff --git a/patcher/src/main/java/xyz/nucleoid/fantasy/Fantasy.java b/patcher/src/main/java/xyz/nucleoid/fantasy/Fantasy.java
+new file mode 100644
+index 0000000..8de11fd
+--- /dev/null
++++ b/patcher/src/main/java/xyz/nucleoid/fantasy/Fantasy.java
+@@ -0,0 +1,59 @@
++package xyz.nucleoid.fantasy;
++
++import com.pixelcite.infiniversepatch.InfiniverseBridge;
++import com.pixelcite.infiniversepatch.WorldSeeds;
++import net.minecraft.registry.RegistryKeys;
++import net.minecraft.registry.RegistryKey;
++import net.minecraft.registry.entry.RegistryEntry;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.world.ServerWorld;
++import net.minecraft.util.Identifier;
++import net.minecraft.world.World;
++import net.minecraft.world.dimension.DimensionOptions;
++import net.minecraft.world.dimension.DimensionType;
++
++/** Drop-in stand-in for xyz.nucleoid.fantasy.Fantasy, backed by Infiniverse. */
++public final class Fantasy {
++   private final MinecraftServer server;
++
++   private Fantasy(MinecraftServer server) {
++      this.server = server;
++   }
++
++   public static Fantasy get(MinecraftServer server) {
++      return new Fantasy(server);
++   }
++
++   public RuntimeWorldHandle getOrOpenPersistentWorld(Identifier id, RuntimeWorldConfig config) {
++      RegistryKey<World> key = RegistryKey.of(RegistryKeys.WORLD, id);
++      if (this.server.getWorld(key) != null) {
++         return new RuntimeWorldHandle(this.server, key);
++      }
++
++      RegistryEntry<DimensionType> type = config.dimensionTypeEntry;
++      if (type == null && config.dimensionTypeKey != null) {
++         type = this.server.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE).getEntry(config.dimensionTypeKey).orElseThrow();
++      }
++
++      if (type == null || config.generator == null) {
++         throw new IllegalStateException("Cannot open world " + id + ": dimension type / generator not set");
++      }
++
++      DimensionOptions options = new DimensionOptions(type, config.generator);
++      if (config.seed != null) {
++         WorldSeeds.put(id, config.seed);
++      }
++
++      try {
++         ServerWorld w = InfiniverseBridge.getOrCreateWorld(this.server, key, () -> options);
++         if (w == null) {
++            throw new IllegalStateException("Infiniverse returned no world for " + id);
++         }
++      } catch (RuntimeException e) {
++         WorldSeeds.remove(id);
++         throw e;
++      }
++
++      return new RuntimeWorldHandle(this.server, key);
++   }
++}
+diff --git a/patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldConfig.java b/patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldConfig.java
+new file mode 100644
+index 0000000..65c9186
+--- /dev/null
++++ b/patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldConfig.java
+@@ -0,0 +1,56 @@
++package xyz.nucleoid.fantasy;
++
++import net.minecraft.registry.RegistryKey;
++import net.minecraft.registry.entry.RegistryEntry;
++import net.minecraft.world.Difficulty;
++import net.minecraft.world.GameRules;
++import net.minecraft.world.dimension.DimensionType;
++import net.minecraft.world.gen.chunk.ChunkGenerator;
++
++/** Drop-in stand-in for Fantasy's RuntimeWorldConfig. Game rules are server-global under Infiniverse, so they are ignored. */
++public class RuntimeWorldConfig {
++   RegistryEntry<DimensionType> dimensionTypeEntry;
++   RegistryKey<DimensionType> dimensionTypeKey;
++   ChunkGenerator generator;
++   Long seed;
++
++   public RuntimeWorldConfig setDimensionType(RegistryEntry<DimensionType> type) {
++      this.dimensionTypeEntry = type;
++      return this;
++   }
++
++   public RuntimeWorldConfig setDimensionType(RegistryKey<DimensionType> type) {
++      this.dimensionTypeKey = type;
++      return this;
++   }
++
++   public RuntimeWorldConfig setGenerator(ChunkGenerator generator) {
++      this.generator = generator;
++      return this;
++   }
++
++   public RuntimeWorldConfig setSeed(long seed) {
++      this.seed = seed;
++      return this;
++   }
++
++   public RuntimeWorldConfig setGameRule(GameRules.Key<GameRules.BooleanRule> key, boolean value) {
++      return this;
++   }
++
++   public RuntimeWorldConfig setGameRule(GameRules.Key<GameRules.IntRule> key, int value) {
++      return this;
++   }
++
++   public RuntimeWorldConfig setDifficulty(Difficulty difficulty) {
++      return this;
++   }
++
++   public RuntimeWorldConfig setShouldTickTime(boolean tick) {
++      return this;
++   }
++
++   public RuntimeWorldConfig setTimeOfDay(long time) {
++      return this;
++   }
++}
+diff --git a/patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldHandle.java b/patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldHandle.java
+new file mode 100644
+index 0000000..2a12edd
+--- /dev/null
++++ b/patcher/src/main/java/xyz/nucleoid/fantasy/RuntimeWorldHandle.java
+@@ -0,0 +1,35 @@
++package xyz.nucleoid.fantasy;
++
++import com.pixelcite.infiniversepatch.InfiniverseBridge;
++import com.pixelcite.infiniversepatch.PatchInit;
++import net.minecraft.registry.RegistryKey;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.world.ServerWorld;
++import net.minecraft.world.World;
++
++public class RuntimeWorldHandle {
++   private final MinecraftServer server;
++   private final RegistryKey<World> key;
++
++   RuntimeWorldHandle(MinecraftServer server, RegistryKey<World> key) {
++      this.server = server;
++      this.key = key;
++   }
++
++   public ServerWorld asWorld() {
++      return this.server.getWorld(this.key);
++   }
++
++   public RegistryKey<World> getRegistryKey() {
++      return this.key;
++   }
++
++   public void unload() {
++      InfiniverseBridge.unregisterWorld(this.server, this.key);
++   }
++
++   public void delete() {
++      PatchInit.scheduleDelete(this.key);
++      InfiniverseBridge.unregisterWorld(this.server, this.key);
++   }
++}
+diff --git a/patcher/src/main/resources/fabric.mod.json b/patcher/src/main/resources/fabric.mod.json
+new file mode 100644
+index 0000000..1587544
+--- /dev/null
++++ b/patcher/src/main/resources/fabric.mod.json
+@@ -0,0 +1,10 @@
++{
++  "schemaVersion": 1,
++  "id": "turnbattle-infiniverse-patch",
++  "version": "${version}",
++  "name": "Turn Battle Infiniverse patch",
++  "environment": "*",
++  "entrypoints": { "main": ["com.pixelcite.infiniversepatch.PatchInit"] },
++  "mixins": ["turnbattle-infiniverse.mixins.json"],
++  "depends": { "fabricloader": ">=0.16.0", "minecraft": "~1.21.1", "java": ">=21", "fabric-api": "*" }
++}
+diff --git a/patcher/src/main/resources/turnbattle-infiniverse.mixins.json b/patcher/src/main/resources/turnbattle-infiniverse.mixins.json
+new file mode 100644
+index 0000000..6310189
+--- /dev/null
++++ b/patcher/src/main/resources/turnbattle-infiniverse.mixins.json
+@@ -0,0 +1,8 @@
++{
++  "required": true,
++  "minVersion": "0.8",
++  "package": "com.pixelcite.infiniversepatch.mixin",
++  "compatibilityLevel": "JAVA_21",
++  "mixins": ["DarkWorldSeedMixin"],
++  "injectors": { "defaultRequire": 1 }
++}
+-- 
+2.43.0
+
