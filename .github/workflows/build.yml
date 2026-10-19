@@ -1,3 +1,4 @@
+# Place at .github/workflows/build.yml (replaces the old one)
 name: Build
 
 on:
@@ -16,28 +17,29 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      # Minecraft 1.21.x needs Java 21
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
-      # No gradlew in the repo, so install a pinned Gradle that Loom 1.9 supports.
-      - name: Set up Gradle
+      - name: Set up Gradle (with caching)
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.12'
+          gradle-version: 8.10.2
 
-      - name: Build mod
-        run: gradle build --stacktrace --no-daemon
+      # Compiles ONLY the small Fantasy->Infiniverse shim in patcher/ (not the decompiled source)
+      - name: Build Fantasy->Infiniverse shim
+        run: gradle -p patcher build --no-daemon --stacktrace
 
-      - name: Upload mod jar
+      # Finds the original turnbattle jar in the repo and overlays the shim onto it
+      - name: Patch original Turn Battle jar
+        run: python3 patcher/scripts/merge.py --patcher-jar "patcher/build/libs/turnbattle-infiniverse-patch-*.jar" --out dist
+
+      - name: Upload patched mod jar
         uses: actions/upload-artifact@v4
         with:
-          name: turnbattle-jar
-          path: |
-            build/libs/*.jar
-            !build/libs/*-sources.jar
-            !build/libs/*-dev.jar
-            !build/libs/*-javadoc.jar
+          name: turnbattle-infiniverse-jar
+          path: dist/*.jar
           if-no-files-found: error
